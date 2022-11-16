@@ -97,9 +97,15 @@ class Graph:
         
         return self
 
-    def find_minimum_weighted_closure(self, algorithm: str = "randomized"):
-        if algorithm == "randomized":
-            self.solution, iterations, execution_time, solutions_number = RandomizedAlgorithm(self.nodes, self.edges).calculate()
+    def find_minimum_weighted_closure(self, seed: int, max_solutions: int, max_time: int):
+        self.solution, iterations, execution_time, solutions_number = \
+            RandomizedAlgorithm(
+                seed,
+                self.nodes, 
+                self.edges, 
+                max_solutions, 
+                max_time
+            ).calculate()
 
         return self.solution, iterations, execution_time, solutions_number
     
@@ -160,9 +166,12 @@ class RandomizedAlgorithm:
 
     global compute_powerset
 
-    def __init__(self, nodes: dict(), edges: dict()):
+    def __init__(self, seed: int, nodes: dict(), edges: dict(), max_solutions, max_time):
+        self.seed = seed
         self.nodes = nodes
         self.edges = edges
+        self.max_solutions = max_solutions
+        self.max_time = max_time
         self.size = len(nodes)
 
     def compute_powerset(lst):
@@ -173,7 +182,7 @@ class RandomizedAlgorithm:
             powerset.append([lst[j] for j in range(l) if (i & (1 << j))])
 
         return powerset
-    
+
     def calculate(self):
 
         start = time.time()
@@ -181,6 +190,11 @@ class RandomizedAlgorithm:
         # a power set of a set S is the set of all subsets of S, 
         # including the empty set and S itself
         powerset = compute_powerset([n for n in self.nodes.keys()])
+
+        if self.max_solutions: powerset = rand.choices(
+                                            powerset, 
+                                            k = self.max_solutions
+                                        )
         
         iterations = 0
 
@@ -222,4 +236,11 @@ class RandomizedAlgorithm:
         
         end = time.time()
 
-        return ast.literal_eval(min(closures_weights, key = closures_weights.get)), iterations, end - start, len(closures)
+        if closures_weights:
+            minimum_weighted_closure = ast.literal_eval(
+                min(closures_weights, key = closures_weights.get)
+            )
+        
+        else: minimum_weighted_closure = None
+
+        return minimum_weighted_closure, iterations, end - start, len(closures)

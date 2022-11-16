@@ -39,14 +39,22 @@ if __name__ == '__main__':
         help = 'maximum number of edges (default: %(default)s)'
     )
     parser.add_argument(
-        '-a', 
-        '--algorithm', 
-        metavar = 'NAME', 
-        default = 'exhaustive', 
-        type = str, 
+        '-s', 
+        '--solutions', 
+        metavar = 'N', 
+        default = 5, 
+        type = int, 
         required = False,
-        choices = ['exhaustive', 'greedy'],
-        help = 'algorithm used to solve the problem (default: exhaustive)'
+        help = 'maximum number of candidate solutions computed (default: %(default)s)'
+    )
+    parser.add_argument(
+        '-t', 
+        '--time', 
+        metavar = 'N', 
+        default = 20, 
+        type = float, 
+        required = False,
+        help = 'maximum computation time (s) spent solving the problem (default: %(default)s)'
     )
     parser.add_argument(
         '-d', 
@@ -61,7 +69,16 @@ if __name__ == '__main__':
     seed = args["random"]
     size = args["nodes"]
     maximum_edges_number = args["edges"]
-    algorithm = args["algorithm"]
+
+    if args["solutions"]: 
+        max_solutions = args["solutions"]
+    else:
+        max_solutions = None
+    
+    if args["time"]:
+        max_time = args["time"]
+    else:
+        max_time = None
 
     if seed:
         g = Graph().random_graph(size, seed, maximum_edges_number)
@@ -69,7 +86,8 @@ if __name__ == '__main__':
         g = Graph().read_graph(args["file"].name)
     
     minimum_weighted_closure, iterations, execution_time, solutions_number = \
-        g.find_minimum_weighted_closure(algorithm = algorithm)
+        g.find_minimum_weighted_closure(seed, max_solutions, max_time)
+
     print("\nMinimum Weighted Closure:", minimum_weighted_closure)
     print("Iterations: ", iterations)
     print("Execution time: ", execution_time)
