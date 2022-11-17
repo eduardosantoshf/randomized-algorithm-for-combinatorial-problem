@@ -191,11 +191,13 @@ class RandomizedAlgorithm:
         # including the empty set and S itself
         powerset = compute_powerset([n for n in self.nodes.keys()])
 
-        if self.max_solutions: powerset = rand.choices(
-                                            powerset, 
-                                            k = self.max_solutions
-                                        )
-        
+        # maximum number of randomly chosen candidate solutions must be less or
+        # equal the number of subsets
+        k = self.max_solutions if self.max_solutions <= len(powerset) else len(powerset)
+
+        # chose m (max_solutions) random candidate solutions
+        if self.max_solutions: powerset = rand.sample(powerset, k)
+
         iterations = 0
 
         closures = []
