@@ -183,15 +183,16 @@ class RandomizedAlgorithm:
             and (self.max_solutions <= 2**l) \
             else rand.sample(range(2**l), 2**l)
 
+        t1 = time.time()
+
         subsets = []
         for i in randoms: # << is the left-shift operator, and has the 
             # effect of multiplying the left hand side by two to the power of 
             # the right hand side: x << n == x * 2**n, in this case:
             # 1 << l == 2^l -> number of subsets of the initial set (lst)
 
-            if self.max_time and (time.time() - start) > self.max_time: 
-                print("break")
-                break
+            # if time exceeds max_time, stop processing the next subsets
+            if self.max_time and (time.time() - start) > self.max_time: break
 
             temp = []
             for j in range(l):
@@ -199,6 +200,8 @@ class RandomizedAlgorithm:
                     temp.append(lst[j])
 
             subsets.append(temp)
+
+        print("Processing subsets time: ", time.time() - t1)
         
         return subsets
 
@@ -207,13 +210,13 @@ class RandomizedAlgorithm:
 
         start = time.time()
 
-        subsets = compute_subsets(self, [n for n in self.nodes.keys()], start)
+        subsets = compute_subsets(self, [n for n in self.nodes.keys()], start) 
 
         subsets.sort()
 
-        #print("subsets: ", subsets)
-
         iterations = 0
+
+        before_processing = time.time()
 
         closures = []
         for possible_closure in subsets:
@@ -246,6 +249,8 @@ class RandomizedAlgorithm:
                                                 for node in closure])
         
         end = time.time()
+
+        print("Processing closures time: ", end - before_processing)
 
         if closures_weights:
             minimum_weighted_closure = ast.literal_eval(

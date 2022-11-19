@@ -42,7 +42,6 @@ if __name__ == '__main__':
         '-s', 
         '--solutions', 
         metavar = 'N', 
-        default = 5, 
         type = int, 
         required = False,
         help = 'maximum number of candidate solutions computed (default: %(default)s)'
