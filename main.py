@@ -50,10 +50,10 @@ if __name__ == '__main__':
         '-t', 
         '--time', 
         metavar = 'N', 
-        default = 20, 
-        type = float, 
+        default = 100, 
+        type = int, 
         required = False,
-        help = 'maximum computation time (s) spent solving the problem (default: %(default)s)'
+        help = 'maximum computation time threshold (%) spent solving the problem (default: %(default)s)'
     )
     parser.add_argument(
         '-d', 

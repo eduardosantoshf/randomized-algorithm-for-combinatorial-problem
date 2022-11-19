@@ -171,10 +171,10 @@ class RandomizedAlgorithm:
         self.nodes = nodes
         self.edges = edges
         self.max_solutions = max_solutions
-        self.max_time = max_time
+        self.threshold = max_time
         self.size = len(nodes)
 
-    def compute_subsets(self, lst, start):
+    def compute_subsets(self, lst):
         l = len(lst)
 
         # if self.max_solutions > 2^l (max number of combinations), use 2^l
@@ -183,45 +183,40 @@ class RandomizedAlgorithm:
             and (self.max_solutions <= 2**l) \
             else rand.sample(range(2**l), 2**l)
 
-        t1 = time.time()
-
         subsets = []
         for i in randoms: # << is the left-shift operator, and has the 
             # effect of multiplying the left hand side by two to the power of 
             # the right hand side: x << n == x * 2**n, in this case:
             # 1 << l == 2^l -> number of subsets of the initial set (lst)
-
-            # if time exceeds max_time, stop processing the next subsets
-            if self.max_time and (time.time() - start) > self.max_time: break
-
+            
             temp = []
             for j in range(l):
                 if (i & (1 << j)):
                     temp.append(lst[j])
 
             subsets.append(temp)
-
-        print("Processing subsets time: ", time.time() - t1)
         
         return subsets
 
 
     def calculate(self):
 
-        start = time.time()
-
-        subsets = compute_subsets(self, [n for n in self.nodes.keys()], start) 
+        subsets = compute_subsets(self, [n for n in self.nodes.keys()]) 
 
         subsets.sort()
 
+        start = time.time()
         iterations = 0
 
-        before_processing = time.time()
+        # maximum computation time, given by the max theoretical number of 
+        # computations, multiplied by a threshold
+        if self.threshold:
+            max_iterations = (2**self.size * self.size) * (self.threshold / 100)
 
         closures = []
         for possible_closure in subsets:
 
-            #print(time.time() - start)
+            if self.threshold and iterations >= max_iterations: break
 
             out_edges = []
             for node in possible_closure:
@@ -233,14 +228,14 @@ class RandomizedAlgorithm:
                     #                and x not in possible_closure)
 
                     for x in self.edges[node]:
-                         if x not in out_edges and x not in possible_closure:
-                            iterations += 1
+                        iterations += 1
 
+                        if x not in out_edges and x not in possible_closure:
                             out_edges.extend([x])
 
-            if not out_edges and possible_closure: # if no edges leave the 
-                                # possible closure and its value != None,
-                                # then this subset is a closure
+            # if no edges leave the possible closure and its value != None,
+            # then this subset is a closure
+            if not out_edges and possible_closure: 
                 closures.append(possible_closure)
 
         closures_weights = dict()
@@ -249,8 +244,6 @@ class RandomizedAlgorithm:
                                                 for node in closure])
         
         end = time.time()
-
-        print("Processing closures time: ", end - before_processing)
 
         if closures_weights:
             minimum_weighted_closure = ast.literal_eval(
