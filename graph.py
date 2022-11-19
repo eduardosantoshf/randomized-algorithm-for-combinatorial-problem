@@ -164,7 +164,7 @@ class GraphDrawer:
 
 class RandomizedAlgorithm:
 
-    global compute_powerset
+    global compute_subsets
 
     def __init__(self, seed: int, nodes: dict(), edges: dict(), max_solutions, max_time):
         self.seed = seed
@@ -174,39 +174,51 @@ class RandomizedAlgorithm:
         self.max_time = max_time
         self.size = len(nodes)
 
-    def compute_powerset(lst):
+    def compute_subsets(self, lst):
         l = len(lst)
 
-        powerset = []
-        for i in range(1 << l):
-            powerset.append([lst[j] for j in range(l) if (i & (1 << j))])
+        randoms = rand.sample(range(2**l), self.max_solutions)
 
-        return powerset
+        randoms.sort()
+        
+        print("subsets sizes: ", randoms)
+
+        subsets = []
+        for i in randoms: # << is the left-shift operator, and has the 
+            # effect of multiplying the left hand side by two to the power of 
+            # the right hand side: x << n == x * 2**n, in this case:
+            # 1 << l == 2^l -> number of subsets of the initial set (lst)
+
+            temp = []
+            for j in range(l):
+                if (i & (1 << j)):
+                    temp.append(lst[j])
+
+            subsets.append(temp)
+        
+        return subsets
+
 
     def calculate(self):
 
         start = time.time()
 
-        # a power set of a set S is the set of all subsets of S, 
-        # including the empty set and S itself
-        powerset = compute_powerset([n for n in self.nodes.keys()])
+        subsets = compute_subsets(self, [n for n in self.nodes.keys()])
 
-        # maximum number of randomly chosen candidate solutions must be less or
-        # equal the number of subsets
-        k = self.max_solutions if self.max_solutions <= len(powerset) else len(powerset)
+        subsets.sort()
 
-        # chose m (max_solutions) random candidate solutions
-        if self.max_solutions: powerset = rand.sample(powerset, k)
+        #print("subsets: ", subsets)
 
         iterations = 0
 
         closures = []
-        for possible_closure in powerset:
-            #print("possible closure: ", possible_closure)
+        for possible_closure in subsets:
+
+            #print(time.time() - start)
 
             out_edges = []
             for node in possible_closure:
-                #print("node: ", node)
+
                 if node in self.edges.keys():
                     # node has no edge to a node outside the subset
                     #out_edges.extend(x for x in self.edges[node]\
@@ -218,18 +230,11 @@ class RandomizedAlgorithm:
                             iterations += 1
 
                             out_edges.extend([x])
-                    
-                    #print("out edges: ", out_edges)
-                    
-            #print("edges to nodes external to the possible closure: ", out_edges)
-            #print("")
 
             if not out_edges and possible_closure: # if no edges leave the 
                                 # possible closure and its value != None,
                                 # then this subset is a closure
                 closures.append(possible_closure)
-        
-        #print("closures: ", closures)
 
         closures_weights = dict()
         for closure in closures:
