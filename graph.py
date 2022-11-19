@@ -174,19 +174,24 @@ class RandomizedAlgorithm:
         self.max_time = max_time
         self.size = len(nodes)
 
-    def compute_subsets(self, lst):
+    def compute_subsets(self, lst, start):
         l = len(lst)
 
-        randoms = rand.sample(
-            range(2**l), 
-            self.max_solutions
-        ) if self.max_solutions <= 2**l else rand.sample(range(2**l), 2**l)
+        # if self.max_solutions > 2^l (max number of combinations), use 2^l
+        randoms = rand.sample(range(2**l), self.max_solutions) \
+            if self.max_solutions \
+            and (self.max_solutions <= 2**l) \
+            else rand.sample(range(2**l), 2**l)
 
         subsets = []
         for i in randoms: # << is the left-shift operator, and has the 
             # effect of multiplying the left hand side by two to the power of 
             # the right hand side: x << n == x * 2**n, in this case:
             # 1 << l == 2^l -> number of subsets of the initial set (lst)
+
+            if self.max_time and (time.time() - start) > self.max_time: 
+                print("break")
+                break
 
             temp = []
             for j in range(l):
@@ -202,7 +207,7 @@ class RandomizedAlgorithm:
 
         start = time.time()
 
-        subsets = compute_subsets(self, [n for n in self.nodes.keys()])
+        subsets = compute_subsets(self, [n for n in self.nodes.keys()], start)
 
         subsets.sort()
 
