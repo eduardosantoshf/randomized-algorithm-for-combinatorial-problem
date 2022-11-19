@@ -177,11 +177,10 @@ class RandomizedAlgorithm:
     def compute_subsets(self, lst):
         l = len(lst)
 
-        randoms = rand.sample(range(2**l), self.max_solutions)
-
-        randoms.sort()
-        
-        print("subsets sizes: ", randoms)
+        randoms = rand.sample(
+            range(2**l), 
+            self.max_solutions
+        ) if self.max_solutions <= 2**l else rand.sample(range(2**l), 2**l)
 
         subsets = []
         for i in randoms: # << is the left-shift operator, and has the 
