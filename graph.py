@@ -203,15 +203,19 @@ class RandomizedAlgorithm:
 
         subsets = compute_subsets(self, [n for n in self.nodes.keys()]) 
 
-        subsets.sort()
+        subsets.sort() # with the sort, the algorithm will compute the subsets
+        # from smallest to largest, node-wise, if we want to make it extra random
+        # the sort can be unused
 
         start = time.time()
         iterations = 0
 
         # maximum computation time, given by the max theoretical number of 
-        # computations, multiplied by a threshold
+        # computations, multiplied by a % threshold, e.g., 
+        # if threshold = 0.2 => 20% of the max computations ≈ 20% of the max 
+        # computation time
         if self.threshold:
-            max_iterations = (2**self.size * self.size) * (self.threshold / 100)
+            max_iterations = (2**self.size * self.size) * self.threshold
 
         closures = []
         for possible_closure in subsets:

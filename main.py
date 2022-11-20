@@ -50,8 +50,8 @@ if __name__ == '__main__':
         '-t', 
         '--time', 
         metavar = 'N', 
-        default = 100, 
-        type = int, 
+        default = 1, 
+        type = float, 
         required = False,
         help = 'maximum computation time threshold (%) spent solving the problem (default: %(default)s)'
     )
