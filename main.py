@@ -36,7 +36,7 @@ if __name__ == '__main__':
         default = 0.25, 
         type = float, 
         required = False,
-        help = 'maximum number of edges (default: %(default)s)'
+        help = 'maximum number of edges (%) (default: %(default)s)'
     )
     parser.add_argument(
         '-s', 
@@ -70,23 +70,23 @@ if __name__ == '__main__':
     maximum_edges_number = args["edges"]
 
     if args["solutions"]: 
-        max_solutions = args["solutions"]
+        max_solutions = args["solutions"] 
     else:
         max_solutions = None
     
     if args["time"]:
-        max_time = args["time"]
+        max_time = args["time"] if 0 <= args["time"] <= 1 else 1
     else:
         max_time = None
 
     if seed:
         g = Graph().random_graph(size, seed, maximum_edges_number)
     else:
-        g = Graph().read_graph(args["file"].name)
+        g = Graph().read_graph(args["file"].name, seed)
     
     minimum_weighted_closure, iterations, execution_time, solutions_number = \
         g.find_minimum_weighted_closure(seed, max_solutions, max_time)
-
+    
     print("\nMinimum Weighted Closure:", minimum_weighted_closure)
     print("Iterations: ", iterations)
     print("Execution time: ", execution_time)

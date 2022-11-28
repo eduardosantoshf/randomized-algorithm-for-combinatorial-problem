@@ -29,9 +29,11 @@ class Graph:
 
         return self
 
-    def read_graph(self, filename: str):
+    def read_graph(self, filename: str, seed: int):
         self.nodes.clear()
         self.edges.clear()
+
+        rand.seed(seed)
 
         try:
             file = open(filename, "r")
@@ -41,33 +43,45 @@ class Graph:
 
         l = 0
         while file:
-            line = file.readline()
-            l += 1
+            file.readline()
+            file.readline()
+            nodes_number = int(file.readline())
+            edges_number = int(file.readline())
 
-            nodes_number = int(line) # number of nodes = number of lines to read
+            l += 1
 
             nodes = dict()
             edges = dict()
-            for v in range(1, nodes_number + 1):
-                x, y, weight, *neighbours = [int(w) for w in \
-                                            file.readline().split()]
+            for v in range(1, edges_number + 1):
+                node1, node2 = [int(w) for w in \
+                                            file.readline().split()[:2]]
+
+                for n in [node1, node2]:
+                    if n not in nodes.keys(): 
+                        nodes[n] = (rand.randint(1, 20), rand.randint(1, 20))
+
+                if node1 not in edges.keys():
+                    edges.setdefault(node1, []).append(node2) 
+                else: 
+                    edges[node1].append(node2)
 
                 l += 1
 
-                nodes[v] = (x, y)
-                self.add_node((x, y), weight) # {node: weight}
-
-                for n in neighbours: # neighbour nodes are nodes 
-                                     # that share an edge
-                    edges.setdefault(v, []).append(n) 
-
             break
+
+        print(f'nodes ids: ', nodes)
+        print(f'nodes edges: ', edges)
+
+        print("\n")
+
+        for n in nodes:
+            self.add_node(nodes[n], rand.randint(1, 10)) # {node: weight}
 
         for e in edges.keys():
             for n in edges[e]: self.add_edge(nodes[e], nodes[n])
 
-        #print(f'nodes: ', self.nodes)
-        #print(f'edges: ', self.edges)
+        print(f'nodes: ', self.nodes)
+        print(f'edges: ', self.edges)
 
         return self
 
