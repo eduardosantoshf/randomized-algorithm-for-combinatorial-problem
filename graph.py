@@ -48,17 +48,21 @@ class Graph:
             nodes_number = int(file.readline())
             edges_number = int(file.readline())
 
+            nodes = dict()
+            for n in range(nodes_number):
+                while True:
+                    # generate random coordinates
+                    x, y = (rand.randint(1, 20), rand.randint(1, 20)) 
+
+                    if not (x, y) in self.nodes: break # continue if point exists
+
+                nodes[n] = [(x,y), rand.randint(1, 10)]
+
             l += 1
 
-            nodes = dict()
             edges = dict()
-            for v in range(1, edges_number + 1):
-                node1, node2 = [int(w) for w in \
-                                            file.readline().split()[:2]]
-
-                for n in [node1, node2]:
-                    if n not in nodes.keys(): 
-                        nodes[n] = (rand.randint(1, 20), rand.randint(1, 20))
+            for _ in range(edges_number):
+                node1, node2 = [int(w) for w in file.readline().split()[:2]]
 
                 if node1 not in edges.keys():
                     edges.setdefault(node1, []).append(node2) 
@@ -69,19 +73,11 @@ class Graph:
 
             break
 
-        print(f'nodes ids: ', nodes)
-        print(f'nodes edges: ', edges)
-
-        print("\n")
-
         for n in nodes:
-            self.add_node(nodes[n], rand.randint(1, 10)) # {node: weight}
+            self.add_node(nodes[n][0], nodes[n][1]) # {node: weight}
 
         for e in edges.keys():
-            for n in edges[e]: self.add_edge(nodes[e], nodes[n])
-
-        print(f'nodes: ', self.nodes)
-        print(f'edges: ', self.edges)
+            for n in edges[e]: self.add_edge(nodes[e][0], nodes[n][0])
 
         return self
 
