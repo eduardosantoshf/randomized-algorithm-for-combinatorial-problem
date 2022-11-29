@@ -41,10 +41,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '-s', 
         '--solutions', 
-        metavar = 'N', 
-        type = int, 
+        metavar = 'N',
+        default = 1, 
+        type = float, 
         required = False,
-        help = 'maximum number of candidate solutions computed (default: %(default)s)'
+        help = 'maximum number of candidate solutions (%) computed (default: %(default)s)'
     )
     parser.add_argument(
         '-t', 

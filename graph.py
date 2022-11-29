@@ -96,14 +96,14 @@ class Graph:
 
             self.add_node((x,y), rand.randint(1, 10))
         
-        print(f'nodes: ', self.nodes)
+        #print(f'nodes: ', self.nodes)
 
         for n1 in self.nodes:
             for n2 in self.nodes:
                 if rand.random() < edge_probability and n1 != n2:
                     self.add_edge(n1, n2) # generate edges until given max
 
-        print(f'edges: ', self.edges)
+        #print(f'edges: ', self.edges)
         
         return self
 
@@ -181,34 +181,11 @@ class RandomizedAlgorithm:
         self.nodes = nodes
         self.edges = edges
         self.max_solutions = max_solutions
-        self.threshold = max_time
+        self.max_time = max_time
         self.size = len(nodes)
 
     def compute_subsets(self, lst):
         l = len(lst)
-
-        '''
-        
-        # if self.max_solutions > 2^l (max number of combinations), use 2^l
-        randoms = rand.sample(range(2**l), self.max_solutions) \
-            if self.max_solutions \
-            and (self.max_solutions <= 2**l) \
-            else rand.sample(range(2**l), 2**l)
-
-        subsets = []
-        for i in randoms: # << is the left-shift operator, and has the 
-            # effect of multiplying the left hand side by two to the power of 
-            # the right hand side: x << n == x * 2**n, in this case:
-            # 1 << l == 2^l -> number of subsets of the initial set (lst)
-            
-            temp = []
-            for j in range(l):
-                if (i & (1 << j)):
-                    temp.append(lst[j])
-
-            subsets.append(temp)
-        
-        '''
 
         powerset = []
         for i in range(1 << l):
@@ -221,43 +198,52 @@ class RandomizedAlgorithm:
             for node in subset:
                 if node in self.edges:
                     for e in self.edges[node]:
+                        # if node has at least one edge to another node in the subset
                         if e in subset:
                             i += 1
                             break
-                else:
+                else: # if node has no edge to another node
                     i += 1
                     if [node] not in subsets:
                         subsets.append([node]) 
             
             if i == len(subset): subsets.append(subset)
-                 
-        subsets.sort()
+
+        print("len(powerset): ", len(powerset))
+        print("len(subsets): ", len(subsets))
+
+        print(subsets)
+
         
-        return subsets
+        return subsets # only subsets that in fact have edges between the nodes
 
 
     def calculate(self):
 
+        start = time.time()
+
         subsets = compute_subsets(self, [n for n in self.nodes.keys()]) 
 
         subsets.sort() # with the sort, the algorithm will compute the subsets
-        # from smallest to largest, node-wise, if we want to make it extra random
-        # the sort can be unused
+        # from smallest to largest, node-wise, if we want to make it "more" 
+        # random the sort can be unused
 
-        start = time.time()
         iterations = 0
 
+        # maximum number of candidate solutions
+        subsets = rand.sample(subsets, round(self.max_solutions * len(subsets)))
+
         # maximum computation time, given by the max theoretical number of 
-        # computations, multiplied by a % threshold, e.g., 
-        # if threshold = 0.2 => 20% of the max computations ≈ 20% of the max 
+        # computations, multiplied by a % max_time, e.g., 
+        # if max_time = 0.2 => 20% of the max computations ≈ 20% of the max 
         # computation time
-        if self.threshold:
-            max_iterations = (2**self.size * self.size) * self.threshold
+        if self.max_time:
+            max_iterations = (2**self.size * self.size) * self.max_time
 
         closures = []
         for possible_closure in subsets:
 
-            if self.threshold and iterations >= max_iterations: break
+            if self.max_time and iterations >= max_iterations: break
 
             out_edges = []
             for node in possible_closure:
