@@ -96,14 +96,14 @@ class Graph:
 
             self.add_node((x,y), rand.randint(1, 10))
         
-        #print(f'nodes: ', self.nodes)
+        print(f'nodes: ', self.nodes)
 
         for n1 in self.nodes:
             for n2 in self.nodes:
                 if rand.random() < edge_probability and n1 != n2:
                     self.add_edge(n1, n2) # generate edges until given max
 
-        #print(f'edges: ', self.edges)
+        print(f'edges: ', self.edges)
         
         return self
 
@@ -187,6 +187,8 @@ class RandomizedAlgorithm:
     def compute_subsets(self, lst):
         l = len(lst)
 
+        '''
+        
         # if self.max_solutions > 2^l (max number of combinations), use 2^l
         randoms = rand.sample(range(2**l), self.max_solutions) \
             if self.max_solutions \
@@ -205,6 +207,31 @@ class RandomizedAlgorithm:
                     temp.append(lst[j])
 
             subsets.append(temp)
+        
+        '''
+
+        powerset = []
+        for i in range(1 << l):
+            powerset.append([lst[j] for j in range(l) if (i & (1 << j))])
+
+        subsets = []
+
+        for subset in powerset:
+            i = 0
+            for node in subset:
+                if node in self.edges:
+                    for e in self.edges[node]:
+                        if e in subset:
+                            i += 1
+                            break
+                else:
+                    i += 1
+                    if [node] not in subsets:
+                        subsets.append([node]) 
+            
+            if i == len(subset): subsets.append(subset)
+                 
+        subsets.sort()
         
         return subsets
 
