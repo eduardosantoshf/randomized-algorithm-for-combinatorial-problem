@@ -1,0 +1,59 @@
+%
+% General structure for the revdetua class:
+%
+\documentclass[...]{revdetua}
+%
+% Valid options are:
+%
+%   longpaper --------- \part and \tableofcontents defined
+%   shortpaper -------- \part and \tableofcontents not defined (default)
+%
+%   english ----------- main language is English (default)
+%   portugues --------- main language is Portuguese
+%
+%   draft ------------- draft version
+%   final ------------- final version (default)
+%
+%   times ------------- use times (postscript) fonts for text
+%
+%   mirror ------------ prints a mirror image of the paper (with dvips)
+%
+%   visiblelabels ----- \SL, \SN, \SP, \EL, \EN, etc. defined
+%   invisiblelabels --- \SL, \SN, \SP, \EL, \EN, etc. not defined (default)
+%
+% Note: the final version should use the times fonts
+% Note: the really final version should also use the mirror option
+%
+
+\begin{document}
+
+\Header{Volume}{Number}{Month}{Year}{InitialPage}
+% Note: the month must be in Portuguese
+
+\title{...}
+\author{...} % or \author{... \and ...}
+\maketitle
+
+\begin{abstract}% Note: in English
+  ...
+\end{abstract}
+
+\begin{resumo}% Note: in Portuguese
+  ...
+\end{resumo}
+
+\begin{keywords}% Note: in English (optional)
+  ...
+\end{keywords}
+
+\begin{palavraschave}% Note: in Portuguese (optional)
+  ...
+\end{palavraschave}
+
+\section{...}
+...
+
+\bibliography{...} % use a field named url or \url{} for URLs
+% Note: the \bibliographystyle is set automatically
+
+\end{document}
