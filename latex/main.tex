@@ -9,7 +9,7 @@
 \usepackage{algpseudocode}
 \usepackage{subfig}
 
-\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+
 
 %
 % Valid options are:
@@ -114,10 +114,59 @@ can be used.
 
 Most of the parameters are the same as in the previous assignment, the ones that are used as part of the randomized algorithm are:
 \begin{itemize}
-    \item \textbf{-s} - this flag allows the user to define the maximum number of candidate solutions to test, its value belongs in [0, 1], with 1 representing all the possible candidate solutions (100\%) 
-    \item \textbf{-i} - this flag allows the user to decide  when  to  stop  testing candidate solutions after spending a certain amount of computation time.
+    \item \textbf{-s} - this flag allows the user to define the maximum number of candidate solutions to test, its value belongs in [0, 1], with 1 representing all the possible candidate solutions (100\%).
+    \item \textbf{-i} - this flag allows the user to decide  when  to  stop  testing candidate solutions after spending a certain amount of computation time (in \%).
 \end{itemize}
 
+\subsection{Bug Fix}
+
+It is important to notice that there was a bug in the previous assignment's exhaustive algorithm. Instead of only testing the subsets with edges that, in fact, existed on the graph. The algorithm computed all the combinations given the graphs' nodes and then found all the possible closures, for each combination, even if it was not present on the graph. This made the algorithm very inefficient, increasing its complexity.
+
+On this assignment, the problem was fixed. Now, the algorithm computes only the subsets that truly exist on the given/generated graph, reducing significantly the time execution time, as well as the number of computations.
+
+\subsection{Randomized Algorithm}
+
+As previously mentioned, the randomized algorithm was based on the exhaustive search and on the Monte Carlo algorithms. Therefore, the algorithm decides when to stop based on a set of user-given parameters (flags), this allows for an increase in efficiency, making the solution less time and resources consuming.
+
+As a non-deterministic algorithm, for the same input, there can be different results on each run, this gives an approximate solution, i.e., a solution that may not be the optimal one. This means that the solution computed may not be the minimum overall weighted closure, 
+but instead, the relative minimum weighted closure of the computed candidate solutions.
+
+Firstly, the algorithm computes all the subsets, \textit{S}, of the given graph. On the exhaustive search, every subset was considered a possible closure, but in this case, the \textit{sample()}\cite{random} function from the random module in Python was used to choose random subsets with the number of subsets being the maximum number of candidate solutions given by the \textbf{-s} flag. Then, for every subset, \textit{C}, it is necessary to check if there are any edges for other nodes that are not in \textit{C}. If this happens, then \textit{C} is not a closure, if not, then the subset is added to the closures list. After having all closures, every subset node’s weight is added, and the closure with the smallest sum is considered the minimum weighted closure.
+
+Another strategy of the randomized algorithm is by using the \textbf{-t} flag. In this case, the algorithm stops computing possible closures when a certain execution time is reached, then computes the minimum weighted closure from the ones found.
+
+Both strategies can be used simultaneously, i.e., the algorithm can stop to choose random subsets with the number of subsets being the maximum number of candidate solutions and stopping when an also given execution time is reached.
+
+%TODO: mostrar exemplo de grafo com exhaustive vs com 50% de -s e -t
+
+\subsubsection{Formal Computational Complexity Analysis}
+
+Performing a formal computational analysis of the exhaustive search algorithm, regarding the time complexity, the complexity would be \textit{O(2$^N$ * N)}, since it is the sum of all combinations of nodes, which can be seen as the sum of numbers of \textit{nth} row of Pascal's triangle. As we also need to iterate over all the nodes of a possible closure, this step increases the complexity by multiplying it by \textit{N}, obtaining the final complexity, mentioned above.
+
+\newpage
+
+\begin{figure}[htp]
+\centering 
+
+\subfloat[Random Graph\label{random_graph}]{%
+  \includegraphics[clip,width=0.65\columnwidth]{figures/complex_graph.png}%
+}
+
+\subfloat[Minimum Weighted Closure Given By Exhaustive Search Algorithm\label{random_graph_exhaustive}]{%
+  \includegraphics[clip,width=0.65\columnwidth]{figures/complex_graph_exhaustive.png}%
+}
+
+\subfloat[Minimum Weighted Closure Given By Randomized Algorithm with \textbf{-s} = 0.5\label{random_graph_randomized}]{%
+  \includegraphics[clip,width=0.65\columnwidth]{figures/complex_graph_s_0.5.png}%
+}
+
+\caption{Comparison Between Exhaustive and Randomized Algorithms}
+
+\end{figure}
+
+In the images above there is a randomly generated graph with 11 nodes and 20\% of the maximum number of possible edges between those nodes [\ref{random_graph}]. For this graph, both exhaustive search [\ref{random_graph_exhaustive}] and randomized [\ref{random_graph_randomized}] algorithms' solutions were computed. Regarding the randomized method, the maximum number of candidate solutions given was 50\% of the maximum number of possible solutions/subsets.
+
+The solution given by the exhaustive search is the optimal one, which means that the closure returned by the algorithm is the minimum weighted one of the whole graph subsets. As the randomized algorithm only computes half of all the possible candidate solutions, the minimum weighted closure it retrieves as a solution is, in this case, the entire graph. It is still a solution, but not the optimal one.
 
 \section{Results and Discussion}
 
@@ -127,15 +176,14 @@ Most of the parameters are the same as in the previous assignment, the ones that
 
 \begin{thebibliography}{9}
 
-\bibitem{networkx}
-NetworkX developers. (2014-2022). NetworkX. 
-\url{https://networkx.org/}
-
-\bibitem{matplotib}
-The Matplotlib development team. (2012-2022). Matplotlib. \url{https://matplotlib.org/}
-
-\bibitem{closure_problem}
+\bibitem{randomized_algorithms}
 GeeksforGeeks. (2022, October 22). Randomized Algorithms. GeeksforGeeks. \url{https://www.geeksforgeeks.org/randomized-algorithms/}
+
+\bibitem{random}
+Python Software Foundation. (2001-2022). random — Generate pseudo-random numbers. 
+\url{https://docs.python.org/3/library/random.html}
+
+% https://docs.python.org/3/library/random.html
 
 \end{thebibliography}
 
