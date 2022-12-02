@@ -36,7 +36,7 @@ if __name__ == '__main__':
         default = 0.25, 
         type = float, 
         required = False,
-        help = 'maximum number of edges (%) (default: %(default)s)'
+        help = 'maximum number of edges (%%) (default: %(default)s)'
     )
     parser.add_argument(
         '-s', 
@@ -45,16 +45,16 @@ if __name__ == '__main__':
         default = 1, 
         type = float, 
         required = False,
-        help = 'maximum number of candidate solutions (%) computed (default: %(default)s)'
+        help = 'maximum number of candidate solutions (%%) computed (default: %(default)s)'
     )
     parser.add_argument(
         '-t', 
         '--time', 
         metavar = 'N', 
-        default = 1, 
+        default = None, 
         type = float, 
         required = False,
-        help = 'maximum computation time threshold (%) spent solving the problem (default: %(default)s)'
+        help = 'maximum computation time threshold (%%) spent solving the problem (default: %(default)s)'
     )
     parser.add_argument(
         '-d', 
