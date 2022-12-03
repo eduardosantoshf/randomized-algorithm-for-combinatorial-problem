@@ -5,6 +5,7 @@ import random as rand
 from pprint import pprint
 import ast
 import time
+from collections import Counter
 
 Point = Tuple[int, int]
 
@@ -41,7 +42,6 @@ class Graph:
             print(f"Error! File not found!")
             exit(1)
 
-        l = 0
         while file:
             file.readline()
             file.readline()
@@ -52,13 +52,11 @@ class Graph:
             for n in range(nodes_number):
                 while True:
                     # generate random coordinates
-                    x, y = (rand.randint(1, 20), rand.randint(1, 20)) 
+                    x, y = (rand.randint(1, nodes_number * 2), rand.randint(1, nodes_number * 2)) 
 
                     if not (x, y) in self.nodes: break # continue if point exists
 
                 nodes[n] = [(x,y), rand.randint(1, 10)]
-
-            l += 1
 
             edges = dict()
             for _ in range(edges_number):
@@ -68,8 +66,6 @@ class Graph:
                     edges.setdefault(node1, []).append(node2) 
                 else: 
                     edges[node1].append(node2)
-
-                l += 1
 
             break
 
@@ -190,7 +186,7 @@ class RandomizedAlgorithm:
         powerset = []
         for i in range(1 << l):
             powerset.append([lst[j] for j in range(l) if (i & (1 << j))])
-
+        
         subsets = []
 
         for subset in powerset:
@@ -208,12 +204,7 @@ class RandomizedAlgorithm:
                         subsets.append([node]) 
             
             if i == len(subset): subsets.append(subset)
-
-        print("len(powerset): ", len(powerset))
-        print("len(subsets): ", len(subsets))
-
-        print(subsets)
-
+        
         
         return subsets # only subsets that in fact have edges between the nodes
 
