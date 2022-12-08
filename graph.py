@@ -211,8 +211,6 @@ class RandomizedAlgorithm:
 
     def calculate(self):
 
-        start = time.time()
-
         subsets = compute_subsets(self, [n for n in self.nodes.keys()]) 
 
         subsets.sort() # with the sort, the algorithm will compute the subsets
@@ -220,6 +218,7 @@ class RandomizedAlgorithm:
         # random the sort can be unused
 
         iterations = 0
+        start = time.time()
 
         # maximum number of candidate solutions
         subsets = rand.sample(subsets, round(self.max_solutions * len(subsets)))

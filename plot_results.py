@@ -4,20 +4,20 @@ from matplotlib.pyplot import figure
 import json
 from pprint import pprint
 
-def compute_results(maximum_nodes_number: int):
+def compute_results(maximum_nodes_number: int, percentage: float):
 
     data1, data2, data3 = dict(), dict(), dict()
     for n in range(1, maximum_nodes_number + 1):
-        g1 = Graph().random_graph(n, 93107, 0.25)
-        g2 = Graph().random_graph(n, 93107, 0.25)
-        g3 = Graph().random_graph(n, 93107, 0.25)
+        g1 = Graph().random_graph(n, 93107, edge_probability = 0.25)
+        g2 = Graph().random_graph(n, 93107, edge_probability = 0.25)
+        g3 = Graph().random_graph(n, 93107, edge_probability = 0.25)
 
         minimum_weighted_closure1, iterations1, execution_time1, solutions_number1 = \
             g1.find_minimum_weighted_closure(93107, 1, 1)
         minimum_weighted_closure2, iterations2, execution_time2, solutions_number2 = \
-            g2.find_minimum_weighted_closure(93107, 0.25, 1)
+            g2.find_minimum_weighted_closure(93107, percentage, 1)
         minimum_weighted_closure3, iterations3, execution_time3, solutions_number3 = \
-            g3.find_minimum_weighted_closure(93107, 1, 0.25)
+            g3.find_minimum_weighted_closure(93107, 1, percentage)
         
         #print("\n\nNumber of nodes: ", n)
         #print("Maximum number of edges: ", m)
@@ -32,26 +32,25 @@ def compute_results(maximum_nodes_number: int):
 
     with open("results/exhaustive.txt", 'w') as file:
         file.write(json.dumps(data1))
-    with open("results/randomized_s_0.25.txt", 'w') as file:
+    with open("results/randomized_s_" + str(percentage) + ".txt", 'w') as file:
         file.write(json.dumps(data2))
-    with open("results/randomized_t_0.25.txt", 'w') as file:
+    with open("results/randomized_t_" + str(percentage) + ".txt", 'w') as file:
         file.write(json.dumps(data3))
 
-def plot_results(comparison: str):
+def plot_results(comparison: str, percentage: float):
     exhaustive, randomized_s, randomized_t = dict(), dict(), dict()
-
     
     with open("results/exhaustive.txt", 'r') as file1:
         exhaustive = json.load(file1)
     
-    with open("results/randomized_s_0.25.txt", 'r') as file2:
+    with open("results/randomized_s_" + str(percentage) + ".txt", 'r') as file2:
         randomized_s = json.load(file2)
 
-    with open("results/randomized_t_0.25.txt", 'r') as file3:
+    with open("results/randomized_t_" + str(percentage) + ".txt", 'r') as file3:
         randomized_t = json.load(file3)
 
     if comparison == "iterations":
-        t = "Iterations" 
+        t = "Iterations"
         ylabel = "iterations"
         c = 0
     if comparison == "solutions_number":
@@ -83,25 +82,31 @@ def plot_results(comparison: str):
     axs[0].set_ylabel(ylabel, fontsize = 8)
     axs[0].plot(exhaustive_nodes, exhaustive_execution_times, color = 'b')
 
-    axs[1].set_title("Randomized 50% max solutions " + t)
+    axs[1].set_title("Randomized Algorithm " + t + " (" + str(int(percentage * 100)) + "% Max Solutions)")
     axs[1].set_xlabel("number of nodes", fontsize = 8)
     axs[1].set_ylabel(ylabel, fontsize = 8)
     axs[1].plot(randomized_s_nodes, randomized_s_execution_times, color = 'r')
 
-    axs[2].set_title("Randomized 50% max computation time " + t)
+    axs[2].set_title("Randomized Algorithm " + t + " (" + str(int(percentage * 100)) + "% Max Execution Time)")
     axs[2].set_xlabel("number of nodes", fontsize = 8)
     axs[2].set_ylabel(ylabel, fontsize = 8)
     axs[2].plot(randomized_t_nodes, randomized_t_execution_times, color = 'r')
 
     fig.tight_layout(pad = 3)
 
+    axs[0].grid(linestyle = "--",linewidth = 0.2)
+    axs[1].grid(linestyle = "--",linewidth = 0.2)
+    axs[2].grid(linestyle = "--",linewidth = 0.2)
+
     plot.show()
         
 
 if __name__ == '__main__':
-    maximum_nodes_number = 20
+    maximum_nodes_number = 25
+    percentage = 0.25
 
-    compute_results(maximum_nodes_number)
-    #plot_results("execution_time")
-    #plot_results("iterations")
-    #plot_results("solutions_number")
+    #compute_results(maximum_nodes_number, percentage)
+
+    #plot_results("execution_time", percentage)
+    #plot_results("iterations", percentage)
+    #plot_results("solutions_number", percentage)
