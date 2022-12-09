@@ -86,7 +86,7 @@ if __name__ == '__main__':
         g = Graph().read_graph(args["file"].name, seed)
     
     minimum_weighted_closure, iterations, execution_time, solutions_number = \
-        g.find_minimum_weighted_closure(seed, max_solutions, max_time)
+        g.find_minimum_weighted_closure(seed, max_solutions, max_time, maximum_edges_number)
     
     print("\nMinimum Weighted Closure:", minimum_weighted_closure)
     print("Iterations: ", iterations)

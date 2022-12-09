@@ -15,9 +15,11 @@ def compute_results(maximum_nodes_number: int, percentage: float):
         minimum_weighted_closure1, iterations1, execution_time1, solutions_number1 = \
             g1.find_minimum_weighted_closure(93107, 1, 1)
         minimum_weighted_closure2, iterations2, execution_time2, solutions_number2 = \
-            g2.find_minimum_weighted_closure(93107, percentage, 1)
+            g2.find_minimum_weighted_closure(93107, percentage, 1, 0.25)
         minimum_weighted_closure3, iterations3, execution_time3, solutions_number3 = \
-            g3.find_minimum_weighted_closure(93107, 1, percentage)
+            g3.find_minimum_weighted_closure(93107, 1, percentage, 0.25)
+
+        print("Graphs # " + str(n) + " computed!")
         
         #print("\n\nNumber of nodes: ", n)
         #print("Maximum number of edges: ", m)
