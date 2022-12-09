@@ -77,7 +77,7 @@ class Graph:
 
         return self
 
-    def random_graph(self, size: int, seed: int, edge_probability: int = 0.5):
+    def random_graph(self, size: int, seed: int, edge_probability: float = 0.5):
         self.nodes.clear()
         self.edges.clear()
 
@@ -103,14 +103,15 @@ class Graph:
         
         return self
 
-    def find_minimum_weighted_closure(self, seed: int, max_solutions: int, max_time: int):
+    def find_minimum_weighted_closure(self, seed: int, max_solutions: int, max_time: int, edge_probability = float):
         self.solution, iterations, execution_time, solutions_number = \
             RandomizedAlgorithm(
                 seed,
                 self.nodes, 
                 self.edges, 
                 max_solutions, 
-                max_time
+                max_time,
+                edge_probability
             ).calculate()
 
         return self.solution, iterations, execution_time, solutions_number
@@ -172,13 +173,14 @@ class RandomizedAlgorithm:
 
     global compute_subsets
 
-    def __init__(self, seed: int, nodes: dict(), edges: dict(), max_solutions, max_time):
+    def __init__(self, seed: int, nodes: dict(), edges: dict(), max_solutions, max_time, edge_probability):
         self.seed = seed
         self.nodes = nodes
         self.edges = edges
         self.max_solutions = max_solutions
         self.max_time = max_time
         self.size = len(nodes)
+        self.edge_probability = edge_probability
 
     def compute_subsets(self, lst):
         l = len(lst)
@@ -213,10 +215,6 @@ class RandomizedAlgorithm:
 
         subsets = compute_subsets(self, [n for n in self.nodes.keys()]) 
 
-        subsets.sort() # with the sort, the algorithm will compute the subsets
-        # from smallest to largest, node-wise, if we want to make it "more" 
-        # random the sort can be unused
-
         iterations = 0
         start = time.time()
 
@@ -228,7 +226,7 @@ class RandomizedAlgorithm:
         # if max_time = 0.2 => 20% of the max computations ≈ 20% of the max 
         # computation time
         if self.max_time:
-            max_iterations = (2**self.size * self.size) * self.max_time
+            max_iterations = (len(subsets) * round(self.size / 2) * round(self.size * self.edge_probability)) * self.max_time
 
         closures = []
         for possible_closure in subsets:
@@ -259,8 +257,6 @@ class RandomizedAlgorithm:
         for closure in closures:
             closures_weights[str(closure)] = sum([self.nodes[node] \
                                                 for node in closure])
-        
-        end = time.time()
 
         if closures_weights:
             minimum_weighted_closure = ast.literal_eval(
@@ -268,5 +264,7 @@ class RandomizedAlgorithm:
             )
         
         else: minimum_weighted_closure = None
+
+        end = time.time()
 
         return minimum_weighted_closure, iterations, end - start, len(closures)
