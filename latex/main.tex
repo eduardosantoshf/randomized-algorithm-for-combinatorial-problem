@@ -141,9 +141,7 @@ Both strategies can be used simultaneously, i.e., the algorithm can stop to choo
 
 \subsubsection{Formal Computational Complexity Analysis}
 
-Performing a formal computational analysis of the exhaustive search algorithm, regarding the time complexity, the complexity would be \textit{O(2$^N$ * N)}, since it is the sum of all combinations of nodes, which can be seen as the sum of numbers of \textit{nth} row of Pascal's triangle. As we also need to iterate over all the nodes of a possible closure, this step increases the complexity by multiplying it by \textit{N}, obtaining the final complexity, mentioned above.
-
-\newpage
+Performing a formal computational analysis of the exhaustive search algorithm, regarding the time complexity, the complexity would be \textit{O(2$^N$ * M)}, where \textit{2$^N$} is the number of subsets, and \textit{M} is the maximum number of edges a node can have. This is because the first \textit{for} loop iterates through all possible subsets, which is \textit{O(2$^N$)}, the second \textit{for} loop iterates through all the elements in each subset, which is \textit{O(n)}, and the third \textit{for} loop iterates through all the edges of each element in the subset, which is \textit{O(m)}. Multiplying the time complexities of the three \textit{for} loops gives the overall time complexity of the algorithm.
 
 \begin{figure}[htp]
 \centering 
@@ -170,9 +168,46 @@ The solution given by the exhaustive search is the optimal one, which means that
 
 \section{Results and Discussion}
 
+Several plots were drawn to better understand the difference between the randomized and the exhaustive algorithms and compare each other. Both algorithms were compared using three parameters: execution time, the number of solutions found, and the number of iterations. For each algorithm, the results were computed using successively larger random graphs with 1 to 25 nodes and 25\% of the maximum number of possible edges between nodes.
+All of the results can be found in the \textbf{results/}
+folder.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{./figures/execution_time_0.25.png}
+    \caption{Execution Time on the Exhaustive and Randomized Algorithms}
+    \label{fig: Execution Time on the Exhaustive and Randomized Algorithms}
+\end{figure}
+
+Comparing the two algorithms, as seen in the plot above, passing 25\% of the maximum number of candidate solutions, as well as 25\% of the maximum execution time, we get similar results between both variations of the randomized algorithm, both representing approximately 20-25\% of the previous one's execution time, when comparing to the exhaustive search. This variation is directly related to the randomly chosen subsets for the computation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{./figures/solutions_number_0.25.png}
+    \caption{Solutions Number on the Exhaustive and Randomized Algorithms}
+    \label{fig: Solutions Number on the Exhaustive and Randomized Algorithms}
+\end{figure}
+
+As well as the execution time, there is also a reduction to 25\% of the solutions number of the exhaustive algorithm, both using the \textbf{-s} and \textbf{-i} parameters. It makes sense that when defining, f.e., 25\% of the maximum number of candidate solutions, the number of solutions found is approximately 25\% of the brute force solution's ones. But when passing the maximum computation time parameter, the similarity, although present, it's not as noticeable, in comparison to the \textbf{-s} flag.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{./figures/iterations_0.25.png}
+    \caption{Iterations Number on the Exhaustive and Randomized Algorithms}
+    \label{fig: Iterations on the Exhaustive and Randomized Algorithms}
+\end{figure}
+
+Finally, comparing both algorithms regarding the iterations number, we can see that, using both the \textbf{-s} and \textbf{-t} parameters, the number of iterations was approximately half of the iterations of the exhaustive search. This can be the supposed results, but can also be a bug when computing the iterations of the algorithm.
+
 
 
 \section{Conclusion}
+
+
+
+\subsection{Future Work}
+
+A feature that could be implemented is the ability of the algorithm to decide when  to  stop  testing  candidate solutions  of  a  certain  size  and  start  testing larger or smaller solutions. This feature, despite not being implemented in this solution, can be done as a future work of the project.
 
 \begin{thebibliography}{9}
 
@@ -182,8 +217,6 @@ GeeksforGeeks. (2022, October 22). Randomized Algorithms. GeeksforGeeks. \url{ht
 \bibitem{random}
 Python Software Foundation. (2001-2022). random — Generate pseudo-random numbers. 
 \url{https://docs.python.org/3/library/random.html}
-
-% https://docs.python.org/3/library/random.html
 
 \end{thebibliography}
 
