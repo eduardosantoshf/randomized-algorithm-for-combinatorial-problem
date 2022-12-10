@@ -9,6 +9,8 @@
 \usepackage{algpseudocode}
 \usepackage{subfig}
 
+\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+
 
 
 %
@@ -62,7 +64,7 @@ An example of a Monte Carlo algorithm to compute this problem, in pseudo-code, i
     \Do
         \State \textit{randomly select an array element}
         \State \textit{i = i + 1}
-    \doWhile{\textit{i == k or '0' is found}}
+    \doWhile{\textit{i == 5 or '0' is found}}
 \end{algorithmic}
 \end{algorithm}
 
@@ -120,7 +122,7 @@ Most of the parameters are the same as in the previous assignment, the ones that
 
 \subsection{Bug Fix}
 
-It is important to notice that there was a bug in the previous assignment's exhaustive algorithm. Instead of only testing the subsets with edges that, in fact, existed on the graph. The algorithm computed all the combinations given the graphs' nodes and then found all the possible closures, for each combination, even if it was not present on the graph. This made the algorithm very inefficient, increasing its complexity.
+It is important to notice that there was a bug in the previous assignment's exhaustive algorithm. Instead of only testing the subsets with edges that, in fact, existed on the graph. The algorithm computed all the combinations given the graphs' nodes and then found all the possible closures, for each combination, even if it was not present on the graph. This made the algorithm very inefficient.
 
 On this assignment, the problem was fixed. Now, the algorithm computes only the subsets that truly exist on the given/generated graph, reducing significantly the time execution time, as well as the number of computations.
 
@@ -141,7 +143,7 @@ Both strategies can be used simultaneously, i.e., the algorithm can stop to choo
 
 \subsubsection{Formal Computational Complexity Analysis}
 
-Performing a formal computational analysis of the exhaustive search algorithm, regarding the time complexity, the complexity would be \textit{O(2$^N$ * M)}, where \textit{2$^N$} is the number of subsets, and \textit{M} is the maximum number of edges a node can have. This is because the first \textit{for} loop iterates through all possible subsets, which is \textit{O(2$^N$)}, the second \textit{for} loop iterates through all the elements in each subset, which is \textit{O(n)}, and the third \textit{for} loop iterates through all the edges of each element in the subset, which is \textit{O(m)}. Multiplying the time complexities of the three \textit{for} loops gives the overall time complexity of the algorithm.
+Performing a formal computational analysis of the exhaustive search algorithm, regarding the time complexity, the complexity would be \textit{O(S * N * M)}, where \textit{S} is the number of subsets, \textit{N} is the number of nodes, and \textit{M} is the maximum number of edges a node can have. This is because the first \textit{for} loop iterates through the randomly chosen  subsets, \textit{S}, which is \textit{O(s)}, the second \textit{for} loop iterates through all the elements in each subset, which is \textit{O(n)}, and the third \textit{for} loop iterates through all the edges of each element in the subset, which is \textit{O(m)}. Multiplying the time complexities of the three \textit{for} loops gives the overall time complexity of the algorithm.
 
 \begin{figure}[htp]
 \centering 
@@ -172,40 +174,47 @@ Several plots were drawn to better understand the difference between the randomi
 All of the results can be found in the \textbf{results/}
 folder.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\columnwidth]{./figures/execution_time_0.25.png}
-    \caption{Execution Time on the Exhaustive and Randomized Algorithms}
+    \caption{Execution Time on the Exhaustive and Randomized Algorithms\label{execution_time}}
     \label{fig: Execution Time on the Exhaustive and Randomized Algorithms}
 \end{figure}
 
-Comparing the two algorithms, as seen in the plot above, passing 25\% of the maximum number of candidate solutions, as well as 25\% of the maximum execution time, we get similar results between both variations of the randomized algorithm, both representing approximately 20-25\% of the previous one's execution time, when comparing to the exhaustive search. This variation is directly related to the randomly chosen subsets for the computation.
+Comparing the two algorithms, as seen in the plot [\ref{execution_time}], passing 25\% of the maximum number of candidate solutions, as well as 25\% of the maximum execution time, we get similar results between both variations of the randomized algorithm, both representing approximately 20-25\% of the previous one's execution time, when comparing to the exhaustive search. This variation is directly related to the randomly chosen subsets for the computation.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\columnwidth]{./figures/solutions_number_0.25.png}
-    \caption{Solutions Number on the Exhaustive and Randomized Algorithms}
+    \caption{Solutions Number on the Exhaustive and Randomized Algorithms\label{solutions_number}}
     \label{fig: Solutions Number on the Exhaustive and Randomized Algorithms}
 \end{figure}
 
-As well as the execution time, there is also a reduction to 25\% of the solutions number of the exhaustive algorithm, both using the \textbf{-s} and \textbf{-i} parameters. It makes sense that when defining, f.e., 25\% of the maximum number of candidate solutions, the number of solutions found is approximately 25\% of the brute force solution's ones. But when passing the maximum computation time parameter, the similarity, although present, it's not as noticeable, in comparison to the \textbf{-s} flag.
+As well as the execution time, there is also a reduction to 25\% of the solutions number [\ref{solutions_number}] of the exhaustive algorithm, both using the \textbf{-s} and \textbf{-i} parameters. It makes sense that when defining, f.e., 25\% of the maximum number of candidate solutions, the number of solutions found is approximately 25\% of the brute force solution's ones. But when passing the maximum computation time parameter, the similarity, although present, it's not as noticeable, in comparison to the \textbf{-s} flag.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\columnwidth]{./figures/iterations_0.25.png}
-    \caption{Iterations Number on the Exhaustive and Randomized Algorithms}
+    \caption{Iterations Number on the Exhaustive and Randomized Algorithms\label{iterations}}
     \label{fig: Iterations on the Exhaustive and Randomized Algorithms}
 \end{figure}
 
-Finally, comparing both algorithms regarding the iterations number, we can see that, using both the \textbf{-s} and \textbf{-t} parameters, the number of iterations was approximately half of the iterations of the exhaustive search. This can be the supposed results, but can also be a bug when computing the iterations of the algorithm.
+Finally, comparing both algorithms regarding the iterations number [\ref{iterations}], we can see that, using both the \textbf{-s} and \textbf{-t} parameters, the number of iterations was approximately half of the iterations of the exhaustive search. This can be the supposed results, but can also be a bug when computing the iterations of the algorithm.
 
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{./figures/benchmark.png}
+    \caption{Comparison between Exhaustive Search and Randomized Algorithms using the \textit{SWtinyEWD.txt} file\label{benchmark}}
+    \label{fig: Comparison between Exhaustive Search and Randomized Algorithms using the SWtinyEWD.txt file}
+\end{figure}
 
+Using the benchmark file to compute the above-mentioned parameters [\ref{benchmark}], the results are as expected. Due to the graphs' size being small, regarding the number of solutions found, we can see that, as probably the subset that contained all nodes was not computed, the number of solutions the randomized algorithm returned was zero.
 
 \section{Conclusion}
 
+This assignment allowed for a better understanding of a randomized algorithm and its variations. Although the randomized algorithm performed better than the exhaustive one, regarding the iterations numbers, as well as execution time, the algorithm does not always return a solution, and when it does, most of the time it is not the optimal one. The randomized algorithm may be seen as a mid-term between the brute force method and the greedy one, both compared to the previous assignment.
 
-
-\subsection{Future Work}
+\section{Future Work}
 
 A feature that could be implemented is the ability of the algorithm to decide when  to  stop  testing  candidate solutions  of  a  certain  size  and  start  testing larger or smaller solutions. This feature, despite not being implemented in this solution, can be done as a future work of the project.
 
